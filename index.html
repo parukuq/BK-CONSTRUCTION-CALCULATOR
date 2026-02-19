@@ -7,11 +7,11 @@
 <style>
 body {font-family: Arial; background:#f5f5f5; padding:15px;}
 .header {display:flex; justify-content:space-between; align-items:center;}
-textarea {padding:5px; margin:3px; width:150px;}
+textarea {padding:5px; margin:3px; width:160px; height:80px;}
 .section {background:white; padding:10px; margin:10px 0; border-radius:10px;}
 .row {display:flex; gap:10px; margin-bottom:5px; align-items:flex-start;}
 button {padding:5px; margin-top:5px;}
-.output {white-space:pre-line;}
+.output {white-space:pre-line; font-weight:bold;}
 </style>
 </head>
 
@@ -66,7 +66,7 @@ row.className="row";
 let textarea=document.createElement("textarea");
 textarea.className="multiInput";
 textarea.placeholder="Enter like:\n10x20\n5x30\n8x12";
-textarea.oninput=calc;
+textarea.addEventListener("input", calc);
 
 let output=document.createElement("div");
 output.className="output";
@@ -86,10 +86,8 @@ document.getElementById(id).appendChild(row);
 }
 
 function clearSection(id){
-let rows=document.querySelectorAll('#'+id+' .row');
-rows.forEach(r=>{
-r.querySelector(".multiInput").value="";
-});
+let rows=document.querySelectorAll('#'+id+' .multiInput');
+rows.forEach(r=>r.value="");
 calc();
 }
 
@@ -110,13 +108,16 @@ let resultText="";
 let lines=text.split("\n");
 
 lines.forEach(line=>{
+line=line.trim();
 if(line.includes("x")){
 let parts=line.split("x");
-let a=parseFloat(parts[0])||0;
-let b=parseFloat(parts[1])||0;
+let a=parseFloat(parts[0]);
+let b=parseFloat(parts[1]);
+if(!isNaN(a) && !isNaN(b)){
 let out=a*b;
 sum+=out;
 resultText += line+" = "+out+"\n";
+}
 }
 });
 
