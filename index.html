@@ -9,8 +9,7 @@ body {font-family: Arial; background:#f5f5f5; padding:15px;}
 .header {display:flex; justify-content:space-between; align-items:center;}
 input {padding:5px; margin:3px;}
 .section {background:white; padding:10px; margin:10px 0; border-radius:10px;}
-.row {display:flex; gap:5px; margin-bottom:5px;}
-.total {font-weight:bold; font-size:18px;}
+.row {display:flex; gap:5px; margin-bottom:5px; align-items:center;}
 button {padding:5px; margin-top:5px;}
 </style>
 </head>
@@ -32,14 +31,16 @@ button {padding:5px; margin-top:5px;}
 <button onclick="saveImage()">Save Screenshot</button>
 
 <script>
-const sections = ["SLAB","BEAM","PILLARS","FOOTING","F.BEAM","STEPS","TANK","S.BEAM"];
 
+const sections = ["SLAB","BEAM","PILLARS","FOOTING","F.BEAM","STEPS","TANK","S.BEAM"];
 document.getElementById("date").innerText = new Date().toLocaleDateString();
 
 function createSection(title){
 let div=document.createElement("div");
 div.className="section";
-div.innerHTML=`<h3>${title}</h3><div id="${title}"></div>
+div.innerHTML=`
+<h3>${title}</h3>
+<div id="${title}"></div>
 <button onclick="addRow('${title}')">+ Add Row</button>
 <p>Total: <span id="${title}_total">0</span></p>`;
 document.getElementById("sections").appendChild(div);
@@ -49,31 +50,53 @@ addRow(title);
 function addRow(title){
 let row=document.createElement("div");
 row.className="row";
-row.innerHTML=`
-<input type="number" placeholder="Input 1" oninput="calc()" onkeyup="calc()">
-*
-<input type="number" placeholder="Input 2" oninput="calc()" onkeyup="calc()">
-=
-<span>0</span>`;
+
+let input1 = document.createElement("input");
+input1.type="number";
+input1.placeholder="Input 1";
+input1.oninput=calc;
+
+let input2 = document.createElement("input");
+input2.type="number";
+input2.placeholder="Input 2";
+input2.oninput=calc;
+
+let equal = document.createElement("span");
+equal.innerText=" = ";
+
+let output = document.createElement("span");
+output.innerText="0";
+
+row.appendChild(input1);
+row.appendChild(document.createTextNode(" * "));
+row.appendChild(input2);
+row.appendChild(equal);
+row.appendChild(output);
+
 document.getElementById(title).appendChild(row);
 }
 
 function calc(){
 let grand=0;
-sections.forEach(s=>{
-let rows=document.querySelectorAll('#'+s+' .row');
+
+sections.forEach(sec=>{
+let rows=document.querySelectorAll('#'+sec+' .row');
 let total=0;
+
 rows.forEach(r=>{
-let a=r.children[0].value||0;
-let b=r.children[1].value||0;
-let out=a*b;
-r.children[2].innerText=out.toFixed(2);
-total+=out;
+let a = parseFloat(r.children[0].value) || 0;
+let b = parseFloat(r.children[2].value) || 0;
+let out = a * b;
+
+r.children[4].innerText = out.toFixed(2);
+total += out;
 });
-document.getElementById(s+"_total").innerText=total.toFixed(2);
-grand+=total;
+
+document.getElementById(sec+"_total").innerText = total.toFixed(2);
+grand += total;
 });
-document.getElementById("grandTotal").innerText=grand.toFixed(2);
+
+document.getElementById("grandTotal").innerText = grand.toFixed(2);
 }
 
 sections.forEach(createSection);
@@ -86,6 +109,7 @@ link.href=canvas.toDataURL();
 link.click();
 });
 }
+
 </script>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
