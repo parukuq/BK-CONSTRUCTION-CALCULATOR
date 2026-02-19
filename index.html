@@ -146,13 +146,21 @@ document.getElementById("grandTotal").innerText=grand.toFixed(2);
 
 sections.forEach(createSection);
 
+// Screenshot without buttons
 function saveImage(){
+
+let buttons = document.querySelectorAll("button");
+buttons.forEach(btn => btn.style.display = "none");
+
 html2canvas(document.body).then(canvas=>{
 let link=document.createElement('a');
 link.download='BK_Calculation.png';
 link.href=canvas.toDataURL();
 link.click();
+
+buttons.forEach(btn => btn.style.display = "inline-block");
 });
+
 }
 
 </script>
