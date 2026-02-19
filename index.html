@@ -7,18 +7,41 @@
 <style>
 body {font-family: Arial; background:#f5f5f5; padding:15px;}
 .header {display:flex; justify-content:space-between; align-items:center;}
+
 textarea {
 padding:5px;
 margin:3px;
 width:180px;
-height:90px;
-font-size:16px;
+height:80px;
+font-size:18px;
 }
+
 .section {background:white; padding:10px; margin:10px 0; border-radius:10px;}
 .row {display:flex; gap:10px; margin-bottom:5px; align-items:flex-start;}
 button {padding:5px; margin-top:5px;}
 .output {white-space:pre-line; font-weight:bold;}
-.hidden {display:none;}
+
+.keypad {
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#000;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:5px;
+padding:10px;
+}
+
+.keypad button {
+font-size:20px;
+padding:15px;
+background:#444;
+color:white;
+border:none;
+border-radius:8px;
+}
+.op {background:#ff9500;}
 </style>
 </head>
 
@@ -45,7 +68,33 @@ Total:
 
 <button id="saveBtn" onclick="saveImage()">Save Screenshot</button>
 
+<div id="keypad" class="keypad hidden"></div>
+
 <script>
+
+let activeInput=null;
+
+const keys = ["7","8","9","*","4","5","6",".","1","2","3","0"];
+
+function showKeypad(input){
+activeInput=input;
+renderKeys();
+}
+
+function renderKeys(){
+let pad=document.getElementById("keypad");
+pad.innerHTML="";
+keys.forEach(k=>{
+let b=document.createElement("button");
+b.innerText=k;
+if(k=="*") b.classList.add("op");
+b.onclick=function(){
+activeInput.value += k;
+calc();
+};
+pad.appendChild(b);
+});
+}
 
 const sections = [
 {name:"SLAB", id:"SLAB"},
@@ -82,23 +131,15 @@ row.className="row";
 
 let textarea=document.createElement("textarea");
 textarea.className="multiInput";
-textarea.placeholder="10*20*3.5";
-textarea.setAttribute("inputmode","decimal");
-textarea.addEventListener("input", calc);
+textarea.placeholder="Tap to enter";
+textarea.readOnly=true;
+textarea.onclick=function(){showKeypad(textarea);};
 
 let output=document.createElement("div");
 output.className="output";
 
-let clearBtn=document.createElement("button");
-clearBtn.innerText="Clear";
-clearBtn.onclick=function(){
-textarea.value="";
-calc();
-};
-
 row.appendChild(textarea);
 row.appendChild(output);
-row.appendChild(clearBtn);
 
 document.getElementById(id).appendChild(row);
 }
@@ -115,7 +156,6 @@ let grand=0;
 sections.forEach(sec=>{
 let rows=document.querySelectorAll('#'+sec.id+' .row');
 let total=0;
-let hasData=false;
 
 rows.forEach(r=>{
 let text=r.querySelector(".multiInput").value;
@@ -148,7 +188,6 @@ result *= num;
 if(valid){
 sum+=result;
 resultText += line+" = "+result+"\n";
-hasData=true;
 }
 }
 });
@@ -158,10 +197,6 @@ total+=sum;
 });
 
 document.getElementById(sec.id+"_total").innerText=total.toFixed(2);
-
-let sectionDiv=document.getElementById(sec.id+"_section");
-sectionDiv.style.display = hasData ? "block" : "none";
-
 grand+=total;
 });
 
@@ -180,6 +215,7 @@ sections.forEach(createSection);
 function saveImage(){
 
 document.getElementById("saveBtn").style.display="none";
+document.getElementById("BEAM_section").style.display="none";
 
 html2canvas(document.body).then(canvas=>{
 let link=document.createElement('a');
