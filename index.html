@@ -66,9 +66,7 @@ row.className="row";
 let textarea=document.createElement("textarea");
 textarea.className="multiInput";
 textarea.placeholder="Enter like:\n10x20\n5x30\n8x12";
-
-textarea.addEventListener("keyup", calc);
-textarea.addEventListener("change", calc);
+textarea.addEventListener("input", calc);
 
 let output=document.createElement("div");
 output.className="output";
@@ -110,7 +108,8 @@ let resultText="";
 let lines=text.split("\n");
 
 lines.forEach(line=>{
-line=line.trim().toLowerCase();
+line=line.trim();
+line=line.replace(/×/g,"x").replace(/X/g,"x").replace(/\s/g,"");
 
 if(line.includes("x")){
 let parts=line.split("x");
@@ -121,7 +120,7 @@ let b=parseFloat(parts[1]);
 if(!isNaN(a) && !isNaN(b)){
 let out=a*b;
 sum+=out;
-resultText += parts[0]+"x"+parts[1]+" = "+out+"\n";
+resultText += parts[0]+" x "+parts[1]+" = "+out+"\n";
 }
 }
 });
