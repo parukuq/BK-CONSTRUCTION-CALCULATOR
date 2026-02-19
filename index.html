@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BK Construction Calculator</title>
+
+<style>
+body {font-family: Arial; background:#f5f5f5; padding:15px;}
+.card {background:white; padding:12px; margin:10px 0; border-radius:10px;}
+input {width:45%; padding:10px; margin-top:5px;}
+button {padding:6px; margin-left:5px;}
+.total {font-size:22px; font-weight:bold; text-align:center; margin-top:20px;}
+</style>
+</head>
+
+<body>
+
+<h2>BK Construction Calculator</h2>
+
+<div class="card">SLAB
+<br><input type="number" id="slab" oninput="calc()"> 
+<button onclick="clearField('slab')">Clear</button>
+<div>Output: <span id="slab_out">0</span></div>
+</div>
+
+<div class="card">BEAM
+<br><input type="number" id="beam" oninput="calc()"> 
+<button onclick="clearField('beam')">Clear</button>
+<div>Output: <span id="beam_out">0</span></div>
+</div>
+
+<div class="card">PILLARS
+<br><input type="number" id="pillars" oninput="calc()"> 
+<button onclick="clearField('pillars')">Clear</button>
+<div>Output: <span id="pillars_out">0</span></div>
+</div>
+
+<div class="card">FOOTING
+<br><input type="number" id="footing" oninput="calc()"> 
+<button onclick="clearField('footing')">Clear</button>
+<div>Output: <span id="footing_out">0</span></div>
+</div>
+
+<div class="card">F.BEAM
+<br><input type="number" id="fbeam" oninput="calc()"> 
+<button onclick="clearField('fbeam')">Clear</button>
+<div>Output: <span id="fbeam_out">0</span></div>
+</div>
+
+<div class="card">STEPS
+<br><input type="number" id="steps" oninput="calc()"> 
+<button onclick="clearField('steps')">Clear</button>
+<div>Output: <span id="steps_out">0</span></div>
+</div>
+
+<div class="card">TANK
+<br><input type="number" id="tank" oninput="calc()"> 
+<button onclick="clearField('tank')">Clear</button>
+<div>Output: <span id="tank_out">0</span></div>
+</div>
+
+<div class="total">
+Total: <span id="total">0</span>
+<br><br>
+<button onclick="clearAll()">Clear All</button>
+</div>
+
+<script>
+function getVal(id){ return parseFloat(document.getElementById(id).value)||0;}
+
+function calc(){
+let slab=getVal('slab')*1.2;
+let beam=getVal('beam')*0.8;
+let pillars=getVal('pillars')*1.5;
+let footing=getVal('footing')*2;
+let fbeam=getVal('fbeam')*1;
+let steps=getVal('steps')*0.6;
+let tank=getVal('tank')*3;
+
+document.getElementById('slab_out').innerText=slab.toFixed(2);
+document.getElementById('beam_out').innerText=beam.toFixed(2);
+document.getElementById('pillars_out').innerText=pillars.toFixed(2);
+document.getElementById('footing_out').innerText=footing.toFixed(2);
+document.getElementById('fbeam_out').innerText=fbeam.toFixed(2);
+document.getElementById('steps_out').innerText=steps.toFixed(2);
+document.getElementById('tank_out').innerText=tank.toFixed(2);
+
+let total=slab+beam+pillars+footing+fbeam+steps+tank;
+document.getElementById('total').innerText=total.toFixed(2);
+}
+
+function clearField(id){
+document.getElementById(id).value='';
+calc();
+}
+
+function clearAll(){
+['slab','beam','pillars','footing','fbeam','steps','tank'].forEach(id=>document.getElementById(id).value='');
+calc();
+}
+</script>
+
+</body>
+</html>
