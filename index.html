@@ -50,9 +50,9 @@ function addRow(title){
 let row=document.createElement("div");
 row.className="row";
 row.innerHTML=`
-<input type="number" placeholder="Input 1" oninput="calc()">
+<input type="number" placeholder="Input 1" oninput="calc()" onkeyup="calc()">
 *
-<input type="number" placeholder="Input 2" oninput="calc()">
+<input type="number" placeholder="Input 2" oninput="calc()" onkeyup="calc()">
 =
 <span>0</span>`;
 document.getElementById(title).appendChild(row);
@@ -61,13 +61,13 @@ document.getElementById(title).appendChild(row);
 function calc(){
 let grand=0;
 sections.forEach(s=>{
-let rows=document.querySelectorAll(`#${s} .row`);
+let rows=document.querySelectorAll('#'+s+' .row');
 let total=0;
 rows.forEach(r=>{
 let a=r.children[0].value||0;
-let b=r.children[2].value||0;
+let b=r.children[1].value||0;
 let out=a*b;
-r.children[4].innerText=out.toFixed(2);
+r.children[2].innerText=out.toFixed(2);
 total+=out;
 });
 document.getElementById(s+"_total").innerText=total.toFixed(2);
