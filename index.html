@@ -32,71 +32,96 @@ button {padding:5px; margin-top:5px;}
 
 <script>
 
-const sections = ["SLAB","BEAM","PILLARS","FOOTING","F.BEAM","STEPS","TANK","S.BEAM"];
+const sections = [
+{name:"SLAB", id:"SLAB"},
+{name:"BEAM", id:"BEAM"},
+{name:"PILLARS", id:"PILLARS"},
+{name:"FOOTING", id:"FOOTING"},
+{name:"F.BEAM", id:"FBEAM"},
+{name:"STEPS", id:"STEPS"},
+{name:"TANK", id:"TANK"},
+{name:"S.BEAM", id:"SBEAM"}
+];
+
 document.getElementById("date").innerText = new Date().toLocaleDateString();
 
-function createSection(title){
+function createSection(sec){
 let div=document.createElement("div");
 div.className="section";
 div.innerHTML=`
-<h3>${title}</h3>
-<div id="${title}"></div>
-<button onclick="addRow('${title}')">+ Add Row</button>
-<p>Total: <span id="${title}_total">0</span></p>`;
+<h3>${sec.name}</h3>
+<div id="${sec.id}"></div>
+<button onclick="addRow('${sec.id}')">+ Add Row</button>
+<button onclick="clearSection('${sec.id}')">Clear Section</button>
+<p>Total: <span id="${sec.id}_total">0</span></p>`;
 document.getElementById("sections").appendChild(div);
-addRow(title);
+addRow(sec.id);
 }
 
-function addRow(title){
+function addRow(id){
 let row=document.createElement("div");
 row.className="row";
 
-let input1 = document.createElement("input");
+let input1=document.createElement("input");
 input1.type="number";
 input1.placeholder="Input 1";
 input1.oninput=calc;
 
-let input2 = document.createElement("input");
+let input2=document.createElement("input");
 input2.type="number";
 input2.placeholder="Input 2";
 input2.oninput=calc;
 
-let equal = document.createElement("span");
-equal.innerText=" = ";
-
-let output = document.createElement("span");
+let output=document.createElement("span");
 output.innerText="0";
+
+let clearBtn=document.createElement("button");
+clearBtn.innerText="Clear";
+clearBtn.onclick=function(){
+input1.value="";
+input2.value="";
+calc();
+};
 
 row.appendChild(input1);
 row.appendChild(document.createTextNode(" * "));
 row.appendChild(input2);
-row.appendChild(equal);
+row.appendChild(document.createTextNode(" = "));
 row.appendChild(output);
+row.appendChild(clearBtn);
 
-document.getElementById(title).appendChild(row);
+document.getElementById(id).appendChild(row);
+}
+
+function clearSection(id){
+let rows=document.querySelectorAll('#'+id+' .row');
+rows.forEach(r=>{
+r.children[0].value="";
+r.children[2].value="";
+});
+calc();
 }
 
 function calc(){
 let grand=0;
 
 sections.forEach(sec=>{
-let rows=document.querySelectorAll('#'+sec+' .row');
+let rows=document.querySelectorAll('#'+sec.id+' .row');
 let total=0;
 
 rows.forEach(r=>{
-let a = parseFloat(r.children[0].value) || 0;
-let b = parseFloat(r.children[2].value) || 0;
-let out = a * b;
-
-r.children[4].innerText = out.toFixed(2);
-total += out;
+let a=parseFloat(r.children[0].value)||0;
+let b=parseFloat(r.children[2].value)||0;
+let out=a*b;
+r.children[4].innerText=out.toFixed(2);
+total+=out;
 });
 
-document.getElementById(sec+"_total").innerText = total.toFixed(2);
-grand += total;
+document.getElementById(sec.id+"_total").innerText=total.toFixed(2);
+grand+=total;
 });
 
-document.getElementById("grandTotal").innerText = grand.toFixed(2);
+document.getElementById("grandTotal").innerText=grand.toFixed(2);
 }
 
 sections.forEach(createSection);
