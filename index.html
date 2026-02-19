@@ -7,10 +7,11 @@
 <style>
 body {font-family: Arial; background:#f5f5f5; padding:15px;}
 .header {display:flex; justify-content:space-between; align-items:center;}
-input {padding:5px; margin:3px;}
+textarea {padding:5px; margin:3px; width:150px;}
 .section {background:white; padding:10px; margin:10px 0; border-radius:10px;}
-.row {display:flex; gap:5px; margin-bottom:5px; align-items:center;}
+.row {display:flex; gap:10px; margin-bottom:5px; align-items:flex-start;}
 button {padding:5px; margin-top:5px;}
+.output {white-space:pre-line;}
 </style>
 </head>
 
@@ -62,34 +63,22 @@ function addRow(id){
 let row=document.createElement("div");
 row.className="row";
 
-let input1=document.createElement("input");
-input1.type="number";
-input1.className="input1";
-input1.placeholder="Input 1";
-input1.oninput=calc;
+let textarea=document.createElement("textarea");
+textarea.className="multiInput";
+textarea.placeholder="Enter like:\n10x20\n5x30\n8x12";
+textarea.oninput=calc;
 
-let input2=document.createElement("input");
-input2.type="number";
-input2.className="input2";
-input2.placeholder="Input 2";
-input2.oninput=calc;
-
-let output=document.createElement("span");
+let output=document.createElement("div");
 output.className="output";
-output.innerText="0";
 
 let clearBtn=document.createElement("button");
 clearBtn.innerText="Clear";
 clearBtn.onclick=function(){
-input1.value="";
-input2.value="";
+textarea.value="";
 calc();
 };
 
-row.appendChild(input1);
-row.appendChild(document.createTextNode(" * "));
-row.appendChild(input2);
-row.appendChild(document.createTextNode(" = "));
+row.appendChild(textarea);
 row.appendChild(output);
 row.appendChild(clearBtn);
 
@@ -99,8 +88,7 @@ document.getElementById(id).appendChild(row);
 function clearSection(id){
 let rows=document.querySelectorAll('#'+id+' .row');
 rows.forEach(r=>{
-r.querySelector(".input1").value="";
-r.querySelector(".input2").value="";
+r.querySelector(".multiInput").value="";
 });
 calc();
 }
@@ -113,11 +101,27 @@ let rows=document.querySelectorAll('#'+sec.id+' .row');
 let total=0;
 
 rows.forEach(r=>{
-let a=parseFloat(r.querySelector(".input1").value)||0;
-let b=parseFloat(r.querySelector(".input2").value)||0;
+let text=r.querySelector(".multiInput").value;
+let outputBox=r.querySelector(".output");
+
+let sum=0;
+let resultText="";
+
+let lines=text.split("\n");
+
+lines.forEach(line=>{
+if(line.includes("x")){
+let parts=line.split("x");
+let a=parseFloat(parts[0])||0;
+let b=parseFloat(parts[1])||0;
 let out=a*b;
-r.querySelector(".output").innerText=out.toFixed(2);
-total+=out;
+sum+=out;
+resultText += line+" = "+out+"\n";
+}
+});
+
+outputBox.innerText=resultText;
+total+=sum;
 });
 
 document.getElementById(sec.id+"_total").innerText=total.toFixed(2);
