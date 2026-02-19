@@ -27,10 +27,11 @@ bottom:0;
 left:0;
 right:0;
 background:#000;
-display:grid;
+display:none;
 grid-template-columns:repeat(4,1fr);
 gap:5px;
 padding:10px;
+z-index:999;
 }
 
 .keypad button {
@@ -45,7 +46,7 @@ border-radius:8px;
 </style>
 </head>
 
-<body>
+<body onclick="closeKeypad(event)">
 
 <div class="header">
 <h2>BK Construction Calculator</h2>
@@ -61,14 +62,14 @@ border-radius:8px;
 Total:
 <span id="grandTotal">0</span>
 *
-<input type="number" id="multiplier" placeholder="Multiplier" oninput="finalCalc()" style="width:80px;">
+<input type="number" id="multiplier" placeholder="Multiplier" onfocus="hideKeypad()" oninput="finalCalc()" style="width:80px;">
 =
 <span id="finalTotal">0</span>
 </h3>
 
 <button id="saveBtn" onclick="saveImage()">Save Screenshot</button>
 
-<div id="keypad" class="keypad hidden"></div>
+<div id="keypad" class="keypad"></div>
 
 <script>
 
@@ -78,7 +79,19 @@ const keys = ["7","8","9","*","4","5","6",".","1","2","3","0"];
 
 function showKeypad(input){
 activeInput=input;
+document.getElementById("keypad").style.display="grid";
 renderKeys();
+}
+
+function hideKeypad(){
+document.getElementById("keypad").style.display="none";
+activeInput=null;
+}
+
+function closeKeypad(e){
+if(!e.target.classList.contains("multiInput")){
+hideKeypad();
+}
 }
 
 function renderKeys(){
@@ -88,17 +101,20 @@ keys.forEach(k=>{
 let b=document.createElement("button");
 b.innerText=k;
 if(k=="*") b.classList.add("op");
-b.onclick=function(){
+b.onclick=function(e){
+e.stopPropagation();
+if(activeInput){
 activeInput.value += k;
 calc();
+}
 };
 pad.appendChild(b);
 });
 }
 
+// 🚨 BEAM removed here
 const sections = [
 {name:"SLAB", id:"SLAB"},
-{name:"BEAM", id:"BEAM"},
 {name:"PILLARS", id:"PILLARS"},
 {name:"FOOTING", id:"FOOTING"},
 {name:"F.BEAM", id:"FBEAM"},
@@ -133,7 +149,10 @@ let textarea=document.createElement("textarea");
 textarea.className="multiInput";
 textarea.placeholder="Tap to enter";
 textarea.readOnly=true;
-textarea.onclick=function(){showKeypad(textarea);};
+textarea.onclick=function(e){
+e.stopPropagation();
+showKeypad(textarea);
+};
 
 let output=document.createElement("div");
 output.className="output";
@@ -213,9 +232,8 @@ document.getElementById("finalTotal").innerText=(g*m).toFixed(2);
 sections.forEach(createSection);
 
 function saveImage(){
-
+hideKeypad();
 document.getElementById("saveBtn").style.display="none";
-document.getElementById("BEAM_section").style.display="none";
 
 html2canvas(document.body).then(canvas=>{
 let link=document.createElement('a');
@@ -230,6 +248,5 @@ location.reload();
 </script>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
 </body>
 </html>
