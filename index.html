@@ -64,15 +64,18 @@ row.className="row";
 
 let input1=document.createElement("input");
 input1.type="number";
+input1.className="input1";
 input1.placeholder="Input 1";
 input1.oninput=calc;
 
 let input2=document.createElement("input");
 input2.type="number";
+input2.className="input2";
 input2.placeholder="Input 2";
 input2.oninput=calc;
 
 let output=document.createElement("span");
+output.className="output";
 output.innerText="0";
 
 let clearBtn=document.createElement("button");
@@ -96,8 +99,8 @@ document.getElementById(id).appendChild(row);
 function clearSection(id){
 let rows=document.querySelectorAll('#'+id+' .row');
 rows.forEach(r=>{
-r.children[0].value="";
-r.children[2].value="";
+r.querySelector(".input1").value="";
+r.querySelector(".input2").value="";
 });
 calc();
 }
@@ -110,10 +113,10 @@ let rows=document.querySelectorAll('#'+sec.id+' .row');
 let total=0;
 
 rows.forEach(r=>{
-let a=parseFloat(r.children[0].value)||0;
-let b=parseFloat(r.children[2].value)||0;
+let a=parseFloat(r.querySelector(".input1").value)||0;
+let b=parseFloat(r.querySelector(".input2").value)||0;
 let out=a*b;
-r.children[4].innerText=out.toFixed(2);
+r.querySelector(".output").innerText=out.toFixed(2);
 total+=out;
 });
 
