@@ -46,6 +46,7 @@ border-radius:8px;
 .op {background:#ff9500;}
 .ctrl {background:#666;}
 .done {background:#34c759;}
+.return {background:#007aff;}
 </style>
 </head>
 
@@ -78,10 +79,12 @@ Total:
 
 let activeInput=null;
 
-const keys = ["7","8","9","⌫",
-              "4","5","6","*",
-              "1","2","3",".",
-              "↓","0","Done"];
+const keys = [
+"7","8","9","⌫",
+"4","5","6","*",
+"1","2","3",".",
+"↵","0","↓","Done"
+];
 
 function showKeypad(input){
 activeInput=input;
@@ -108,9 +111,10 @@ keys.forEach(k=>{
 let b=document.createElement("button");
 b.innerText=k;
 
-if(k=="*" ) b.classList.add("op");
+if(k=="*") b.classList.add("op");
 if(k=="⌫" || k=="↓") b.classList.add("ctrl");
 if(k=="Done") b.classList.add("done");
+if(k=="↵") b.classList.add("return");
 
 b.onclick=function(e){
 e.stopPropagation();
@@ -129,6 +133,9 @@ calc();
 hideKeypad();
 return;
 }
+else if(k=="↵"){
+activeInput.value += "\n";
+}
 else{
 activeInput.value += k;
 }
@@ -140,7 +147,6 @@ pad.appendChild(b);
 });
 }
 
-// BEAM removed
 const sections = [
 {name:"SLAB", id:"SLAB"},
 {name:"PILLARS", id:"PILLARS"},
