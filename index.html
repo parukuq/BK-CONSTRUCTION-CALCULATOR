@@ -42,7 +42,10 @@ color:white;
 border:none;
 border-radius:8px;
 }
+
 .op {background:#ff9500;}
+.ctrl {background:#666;}
+.done {background:#34c759;}
 </style>
 </head>
 
@@ -75,7 +78,10 @@ Total:
 
 let activeInput=null;
 
-const keys = ["7","8","9","*","4","5","6",".","1","2","3","0"];
+const keys = ["7","8","9","⌫",
+              "4","5","6","*",
+              "1","2","3",".",
+              "↓","0","Done"];
 
 function showKeypad(input){
 activeInput=input;
@@ -97,22 +103,44 @@ hideKeypad();
 function renderKeys(){
 let pad=document.getElementById("keypad");
 pad.innerHTML="";
+
 keys.forEach(k=>{
 let b=document.createElement("button");
 b.innerText=k;
-if(k=="*") b.classList.add("op");
+
+if(k=="*" ) b.classList.add("op");
+if(k=="⌫" || k=="↓") b.classList.add("ctrl");
+if(k=="Done") b.classList.add("done");
+
 b.onclick=function(e){
 e.stopPropagation();
-if(activeInput){
-activeInput.value += k;
-calc();
+
+if(!activeInput) return;
+
+if(k=="⌫"){
+activeInput.value = activeInput.value.slice(0,-1);
 }
+else if(k=="↓"){
+hideKeypad();
+return;
+}
+else if(k=="Done"){
+calc();
+hideKeypad();
+return;
+}
+else{
+activeInput.value += k;
+}
+
+calc();
 };
+
 pad.appendChild(b);
 });
 }
 
-// 🚨 BEAM removed here
+// BEAM removed
 const sections = [
 {name:"SLAB", id:"SLAB"},
 {name:"PILLARS", id:"PILLARS"},
@@ -128,7 +156,6 @@ document.getElementById("date").innerText = new Date().toLocaleDateString();
 function createSection(sec){
 let div=document.createElement("div");
 div.className="section";
-div.id=sec.id+"_section";
 
 div.innerHTML=`
 <h3>${sec.name}</h3>
