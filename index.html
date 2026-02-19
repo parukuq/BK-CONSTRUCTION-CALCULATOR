@@ -7,7 +7,7 @@
 <style>
 body {font-family: Arial; background:#f5f5f5; padding:15px;}
 .header {display:flex; justify-content:space-between; align-items:center;}
-textarea {padding:5px; margin:3px; width:160px; height:80px;}
+textarea {padding:5px; margin:3px; width:180px; height:90px;}
 .section {background:white; padding:10px; margin:10px 0; border-radius:10px;}
 .row {display:flex; gap:10px; margin-bottom:5px; align-items:flex-start;}
 button {padding:5px; margin-top:5px;}
@@ -65,7 +65,7 @@ row.className="row";
 
 let textarea=document.createElement("textarea");
 textarea.className="multiInput";
-textarea.placeholder="Enter like:\n10x20\n5x30\n8x12";
+textarea.placeholder="Enter like:\n10*20*3.5\n5*6*2";
 textarea.addEventListener("input", calc);
 
 let output=document.createElement("div");
@@ -109,18 +109,26 @@ let lines=text.split("\n");
 
 lines.forEach(line=>{
 line=line.trim();
-line=line.replace(/×/g,"x").replace(/X/g,"x").replace(/\s/g,"");
+line=line.replace(/×/g,"*").replace(/X/g,"*");
 
-if(line.includes("x")){
-let parts=line.split("x");
+if(line.includes("*")){
+let parts=line.split("*");
 
-let a=parseFloat(parts[0]);
-let b=parseFloat(parts[1]);
+let result=1;
+let valid=true;
 
-if(!isNaN(a) && !isNaN(b)){
-let out=a*b;
-sum+=out;
-resultText += parts[0]+" x "+parts[1]+" = "+out+"\n";
+parts.forEach(p=>{
+let num=parseFloat(p);
+if(isNaN(num)){
+valid=false;
+}else{
+result *= num;
+}
+});
+
+if(valid){
+sum+=result;
+resultText += line+" = "+result+"\n";
 }
 }
 });
